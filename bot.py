@@ -206,15 +206,12 @@ async def coachinginfo(ctx):
     await ctx.send("Private coaching requires advance payment. Sessions expire in 90 days. Contact @TMTC Support for onboarding.")
 
 # ======= Start the Bot =======
-
-bot.start()
-
-# ======= Dummy Server =======
-
 import threading
 import http.server
 import socketserver
+import asyncio
 
+# Dummy HTTP server to trick Render
 def dummy_server():
     PORT = 8080
     Handler = http.server.SimpleHTTPRequestHandler
@@ -222,5 +219,11 @@ def dummy_server():
         print(f"🔌 Dummy server running on port {PORT}")
         httpd.serve_forever()
 
-# Start the dummy server in a separate thread
+# Start dummy server in background
 threading.Thread(target=dummy_server, daemon=True).start()
+
+# Start Discord bot
+async def start_bot():
+    await bot.start()
+
+asyncio.run(start_bot())
