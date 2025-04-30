@@ -208,3 +208,19 @@ async def coachinginfo(ctx):
 # ======= Start the Bot =======
 
 bot.start()
+
+# ======= Dummy Server =======
+
+import threading
+import http.server
+import socketserver
+
+def dummy_server():
+    PORT = 8080
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"🔌 Dummy server running on port {PORT}")
+        httpd.serve_forever()
+
+# Start the dummy server in a separate thread
+threading.Thread(target=dummy_server, daemon=True).start()
