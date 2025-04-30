@@ -17,6 +17,8 @@ TOKEN = os.getenv("TOKEN")
 if not TOKEN:
     raise RuntimeError("Bot token is missing — check your environment variable 'TOKEN'.")
 
+print("TOKEN loaded:", TOKEN[:10], "..." if TOKEN else "None")
+
 bot = interactions.Client(token=TOKEN)
 
 # ======= Helper Functions =======
