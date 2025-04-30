@@ -7,12 +7,16 @@
 #
 # For licensing inquiries, contact: legal@themilitiatradingcompany.com
 
+import os
+from dotenv import load_dotenv
 import interactions
 
-# Direct Bot Token (local setup — no .env needed for now)
-TOKEN = ''  # <-- Replace with your actual bot token
+load_dotenv()  # This does nothing on Render, but keeps local compatibility
+TOKEN = os.getenv("TOKEN")
 
-# Initialize Bot
+if not TOKEN:
+    raise RuntimeError("Bot token is missing — check your environment variable 'TOKEN'.")
+
 bot = interactions.Client(token=TOKEN)
 
 # ======= Helper Functions =======
