@@ -15,9 +15,10 @@ load_dotenv()  # This does nothing on Render, but keeps local compatibility
 TOKEN = os.getenv("TOKEN")
 
 if not TOKEN:
-    raise RuntimeError("Bot token is missing — check your environment variable 'TOKEN'.")
-
-print("TOKEN loaded:", TOKEN[:10], "..." if TOKEN else "None")
+    print("❌ TOKEN is missing.")
+    exit(1)
+else:
+    print("✅ TOKEN loaded:", TOKEN[:10], "...")
 
 bot = interactions.Client(token=TOKEN)
 
