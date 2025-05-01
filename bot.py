@@ -7,6 +7,18 @@
 #
 # For licensing inquiries, contact: legal@themilitiatradingcompany.com
 
+# ─── PATCH Interactions.py for Avatar None Bug ───────────────────────────────────
+import interactions.models.discord.user as user_module
+
+original_process_dict = user_module.User._process_dict
+
+def patched_process_dict(data, client):
+    if "avatar" in data and data["avatar"] is None:
+        data["avatar"] = ""  # avoid NoneType by replacing with empty string
+    return original_process_dict(data, client)
+
+user_module.User._process_dict = staticmethod(patched_process_dict)
+
 import os
 import threading
 import http.server
