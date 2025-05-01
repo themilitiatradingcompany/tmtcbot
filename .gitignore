@@ -1,0 +1,6 @@
+<<<<<<< HEAD
+=======
+.env
+__pycache__/
+.env
+>>>>>>> 6ebc057 (Stop tracking .env and add to .gitignore)
