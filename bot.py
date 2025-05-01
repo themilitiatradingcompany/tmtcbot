@@ -138,7 +138,7 @@ async def steveshallway(ctx):
     )
 
 @interactions.slash_command(
-    name="faileda auction",
+    name="failedaauction",
     description="Explain Failed Auction setups inside TMTC framework.",
 )
 async def faileauction(ctx):
