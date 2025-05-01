@@ -1,2 +1,3 @@
 interactions.py
 python-dotenv
+interactions.py>=5.14.2
