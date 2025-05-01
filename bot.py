@@ -39,6 +39,7 @@ bot = interactions.Client(token=TOKEN, sync_commands=True)
 
 # ─── Permission Check Helper ────────────────────────────────────────────────────
 def has_militia_role(ctx):
+    print(f"DEBUG: ctx.author.roles = {ctx.author.roles}")
     allowed_roles = ["Militia"]
     user_roles = [r.name for r in ctx.author.roles]
     return any(r in allowed_roles for r in user_roles)
