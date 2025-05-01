@@ -38,11 +38,17 @@ print("✅ TOKEN loaded:", TOKEN[:10], "...")
 bot = interactions.Client(token=TOKEN, sync_commands=True)
 
 # ─── Permission Check Helper ────────────────────────────────────────────────────
+import asyncio
+
 def has_militia_role(ctx):
     print(f"DEBUG: ctx.author.roles = {ctx.author.roles}")
     allowed_roles = ["Militia"]
     user_roles = [r.name for r in ctx.author.roles]
     return any(r in allowed_roles for r in user_roles)
+
+if __name__ == "__main__":
+    threading.Thread(target=run_http_server, daemon=True).start()
+    asyncio.run(bot.astart())
 
 # ─── Phase 1 – Core TMTC Concepts ────────────────────────────────────────────────
 @interactions.slash_command(
