@@ -9,9 +9,8 @@
 
 import os
 import threading
-from dotenv import load_dotenv
-import interactions
-from aiohttp import web
+import http.server
+import socketserver
 
 # ─── Load & Validate Token ─────────────────────────────────────────────────────
 load_dotenv()
@@ -247,18 +246,24 @@ async def coachinginfo(ctx):
         "Private coaching requires advance payment. Sessions expire in 90 days. Contact @TMTC Support to onboard."
     )
 
-# Health‐check handler
-async def health(request):
-    return web.Response(text="OK")
+# ─── Health-Check HTTP Handler ───────────────────────────────────────────
+class HealthHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"OK")
 
 def run_http_server():
-    app = web.Application()
-    app.router.add_get("/", health)
     port = int(os.environ.get("PORT", 10000))
-    web.run_app(app, host="0.0.0.0", port=port)
+    with socketserver.TCPServer(("", port), HealthHandler) as server:
+        print(f"🔌 HTTP server listening on port {port}")
+        server.serve_forever()
 
+# ─── Start Services ───────────────────────────────────────────────────────
 if __name__ == "__main__":
-    # 1) start HTTP server in the background
+    # 1) Launch the health-check server in the background
     threading.Thread(target=run_http_server, daemon=True).start()
-    # 2) then connect Discord – this will block and run forever
+
+    # 2) Connect your Discord bot (this blocks indefinitely)
     bot.start()
