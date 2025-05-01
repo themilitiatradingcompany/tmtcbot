@@ -12,6 +12,7 @@ import threading
 import http.server
 import socketserver
 from dotenv import load_dotenv
+import interactions
 
 # ─── Load & Validate Token ─────────────────────────────────────────────────────
 load_dotenv()
