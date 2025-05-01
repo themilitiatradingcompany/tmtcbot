@@ -8,20 +8,21 @@
 # For licensing inquiries, contact: legal@themilitiatradingcompany.com
 
 import os
-import asyncio
+import threading
 from dotenv import load_dotenv
 import interactions
 from aiohttp import web
 
 # ─── Load & Validate Token ─────────────────────────────────────────────────────
-load_dotenv()  # loads .env locally
+load_dotenv()
 TOKEN = os.getenv("TOKEN")
 if not TOKEN:
-    raise RuntimeError("Bot token is missing — check your 'TOKEN' env var.")
+    raise RuntimeError("Missing TOKEN")
+
 print("✅ TOKEN loaded:", TOKEN[:10], "...")
 
 # ─── Initialize Discord Client ─────────────────────────────────────────────────
-bot = interactions.Client(token=TOKEN)
+bot = interactions.Client(token=TOKEN, sync_commands=True)
 
 # ─── Permission Check Helper ────────────────────────────────────────────────────
 def has_militia_role(ctx):
@@ -246,27 +247,18 @@ async def coachinginfo(ctx):
         "Private coaching requires advance payment. Sessions expire in 90 days. Contact @TMTC Support to onboard."
     )
 
-# ─── HTTP Health‐Check & Background Server ──────────────────────────────────────
+# Health‐check handler
 async def health(request):
     return web.Response(text="OK")
 
-async def start_http_server():
+def run_http_server():
     app = web.Application()
     app.router.add_get("/", health)
-    runner = web.AppRunner(app)
-    await runner.setup()
     port = int(os.environ.get("PORT", 10000))
-    site = web.TCPSite(runner, "0.0.0.0", port)
-    await site.start()
-    print(f"🔌 HTTP server listening on port {port}")
-
-# ─── Entry Point ────────────────────────────────────────────────────────────────
-async def main():
-    await asyncio.gather(
-        start_http_server(),
-        bot.astart(TOKEN)  # use the async start method
-    )
+    web.run_app(app, host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
-    asyncio.run(main())
-
+    # 1) start HTTP server in the background
+    threading.Thread(target=run_http_server, daemon=True).start()
+    # 2) then connect Discord – this will block and run forever
+    bot.start()
